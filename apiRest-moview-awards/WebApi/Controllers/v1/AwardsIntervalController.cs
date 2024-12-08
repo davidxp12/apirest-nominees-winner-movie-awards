@@ -12,9 +12,9 @@ namespace ApiRestMovieAwards.BFF.Controllers.v1
 	public class AwardsIntervalController : BaseApiController
 	{
 		[HttpGet]
-		public async Task<IActionResult> GetAll(bool? winner)
+		public async Task<IActionResult> GetAll()
 		{
-			return Ok(await Mediator.Send(new AwardsIntervalQuery() { Winner = winner }));
+			return Ok(await Mediator.Send(new AwardsIntervalQuery() {}));
 		}
 	}
 }

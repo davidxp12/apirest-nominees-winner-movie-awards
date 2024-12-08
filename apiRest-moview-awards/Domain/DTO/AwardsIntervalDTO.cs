@@ -13,7 +13,7 @@ namespace Domain.DTO
 	public class AwardsIntervalItemDTO
 	{
 		public string Producer { get; set; }
-		public int Interval { get; set; }
+		public int Interval { get { return (FollowingWin - PreviousWin); } }
 		public int PreviousWin { get; set; }
 		public int FollowingWin { get; set; }
 	}

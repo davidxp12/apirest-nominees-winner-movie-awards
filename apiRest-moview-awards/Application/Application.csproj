@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Features\ProductFeatures\Queries\**" />
+    <EmbeddedResource Remove="Features\ProductFeatures\Queries\**" />
+    <None Remove="Features\ProductFeatures\Queries\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Features\ProductFeatures\Commands\CreateProductCommand.cs" />
+    <Compile Remove="Features\ProductFeatures\Commands\DeleteProductByIdCommand.cs" />
+    <Compile Remove="Features\ProductFeatures\Commands\UpdateProductCommand.cs" />
+    <Compile Remove="Interfaces\IApplicationDbContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="33.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Features\MovieFeatures\Queries\" />
+    <Folder Include="Features\ProductFeatures\Commands\" />
+  </ItemGroup>
+</Project>

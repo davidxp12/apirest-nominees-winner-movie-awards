@@ -42,9 +42,9 @@ namespace ApiRestMoviewAwards.Test
             var result = await controller.GetAll();
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result); // Verifica se é um OkObjectResult
-            var actualData = Assert.IsType<AwardsIntervalDTO>(okResult.Value); // Verifica o tipo do dado
-            Assert.Equal(expectedResult.Min.Count, actualData.Min.Count); // Verifica os dados retornados
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var actualData = Assert.IsType<AwardsIntervalDTO>(okResult.Value); 
+            Assert.Equal(expectedResult.Min.Count, actualData.Min.Count);
             Assert.Equal(expectedResult.Max.Count, actualData.Max.Count);
         }
     }

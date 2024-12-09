@@ -57,6 +57,7 @@ namespace ApiRestMovieAwards.BFF
 
 			services.AddTransient<IReaderCsvMoviesService, ReaderCsvMoviesService>();
 
+			//database in memory
 			services.AddSingleton<ILiteDatabase>(provider =>
 			{
 				return new LiteDatabase(":memory:");  

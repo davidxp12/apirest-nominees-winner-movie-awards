@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-
+	 <StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 

@@ -22,24 +22,44 @@ namespace Application.Features.AwardsIntervalFeatures.Queries
 			}
 			public async Task<AwardsIntervalDTO> Handle(AwardsIntervalQuery query, CancellationToken cancellationToken)
 			{
-				AwardsIntervalDTO awardsIntervalDTO = new AwardsIntervalDTO();
+				if (query == null || _movieRepository == null)
+					throw new ArgumentNullException("Query ou repositório não podem ser nulos.");
 
-				var listMovies = _movieRepository.GetAll().Where(x => x.IsWinner() == true);
+				var listMovies = (await _movieRepository.GetAllAsync(cancellationToken))
+					.Where(x => x.IsWinner())
+					.ToList();
 
-				if (listMovies == null)
-				{
+				if (!listMovies.Any())
 					return null;
-				}
 
-				List<AwardsIntervalItemDTO> producersWin = new List<AwardsIntervalItemDTO>();
+				// Extrair produtores e criar lista inicial de prêmios
+				var producersWin = ExtractProducers(listMovies);
 
-				foreach (var movie in listMovies)
+				// Agrupar intervalos por produtor
+				var producerIntervals = CalculateIntervals(producersWin);
+
+				// Montar resultado final
+				var awardsIntervalDTO = new AwardsIntervalDTO
 				{
-					var producers = movie.Producers.Split(new[] { ", ", " and " }, StringSplitOptions.RemoveEmptyEntries).ToList();
+					Min = producerIntervals.SelectMany(p => p.Min).OrderBy(x => x.Producer).ToList(),
+					Max = producerIntervals.SelectMany(p => p.Max).OrderBy(x => x.Producer).ToList()
+				};
+
+				return awardsIntervalDTO;
+			}
+
+			private List<AwardsIntervalItemDTO> ExtractProducers(List<Movie> movies)
+			{
+				var producersWin = new List<AwardsIntervalItemDTO>();
+
+				foreach (var movie in movies)
+				{
+					var producers = movie.Producers
+						.Split(new[] { ", ", " and " }, StringSplitOptions.RemoveEmptyEntries);
 
 					foreach (var producer in producers)
 					{
-						producersWin.Add(new AwardsIntervalItemDTO()
+						producersWin.Add(new AwardsIntervalItemDTO
 						{
 							Producer = producer,
 							PreviousWin = movie.Year,
@@ -48,7 +68,12 @@ namespace Application.Features.AwardsIntervalFeatures.Queries
 					}
 				}
 
-				// Agrupar por producer
+				return producersWin;
+			}
+
+			private List<AwardsIntervalDTO> CalculateIntervals(List<AwardsIntervalItemDTO> producersWin)
+			{
+				// Agrupar por produtor
 				var producerAwards = producersWin
 					.GroupBy(d => d.Producer)
 					.Select(g => new
@@ -58,64 +83,42 @@ namespace Application.Features.AwardsIntervalFeatures.Queries
 					})
 					.ToList();
 
-				// Calcular os intervalos para cada producer
-				//var producerIntervals = producerAwards
-				//	.SelectMany(p => p.Years.Zip(p.Years.Skip(1), (previous, following) => new
-				//	{
-				//		Producer = p.Producer,
-				//		Interval = following - previous,
-				//		PreviousWin = previous,
-				//		FollowingWin = following
-				//	}))
-				//	.ToList();
-
-				var producerIntervals = producerAwards
-				.SelectMany(p =>
+				// Calcular intervalos por produtor
+				return producerAwards.Select(p =>
 				{
-					// Se o produtor tiver apenas um prêmio, adicionamos uma entrada com intervalo 0
-					if (p.Years.Count < 2)
+					var intervals = CalculateProducerIntervals(p.Producer, p.Years);
+
+					return new AwardsIntervalDTO
 					{
-						return new List<AwardsIntervalItemDTO>
-						{
-							new AwardsIntervalItemDTO
-							{
-								Producer = p.Producer,
-								PreviousWin = p.Years.First(),
-								FollowingWin = p.Years.First()
-							}
-						};
-					}
-
-					// Para produtores com mais de um prêmio, calculamos os intervalos normalmente
-					return p.Years.Zip(p.Years.Skip(1), (previous, following) => new AwardsIntervalItemDTO
-					{
-						Producer = p.Producer,
-						PreviousWin = previous,
-						FollowingWin = following
-					});
-				})
-				.ToList();
-
-				// Encontrar os intervalos mínimos
-				int minIntervalValue = producerIntervals.Where(p => p.Interval > 0).Min(p => p.Interval);
-				var minIntervals = producerIntervals
-					.Where(p => p.Interval <= minIntervalValue)
-					.ToList();
-
-				// Encontrar os intervalos máximos
-				int maxIntervalValue = producerIntervals.Where(p => p.Interval > 0).Max(p => p.Interval);
-				var maxIntervals = producerIntervals
-					.Where(p => p.Interval >= maxIntervalValue)
-					.ToList();
-
-				awardsIntervalDTO.Min = minIntervals?.Select(p => new AwardsIntervalItemDTO { Producer = p.Producer, PreviousWin = p.PreviousWin, FollowingWin = p.FollowingWin }).ToList();
-				 awardsIntervalDTO.Max = maxIntervals?.Select(p => new AwardsIntervalItemDTO { Producer = p.Producer, PreviousWin = p.PreviousWin, FollowingWin = p.FollowingWin }).ToList();
-
-				//awardsIntervalDTO.Min = minInterval?.SelectMany(p => new AwardsIntervalItemDTO { Producer = p.Producer, PreviousWin = p.PreviousWin, FollowingWin = p.FollowingWin }).ToList();
-				//awardsIntervalDTO.Max = maxInterval?.SelectMany(p => new AwardsIntervalItemDTO { Producer = p.Producer, PreviousWin = p.PreviousWin, FollowingWin = p.FollowingWin }).ToList();
-
-				return awardsIntervalDTO;
+						Min = intervals.Where(x => x.Interval == intervals.Min(i => i.Interval)).ToList(),
+						Max = intervals.Where(x => x.Interval == intervals.Max(i => i.Interval)).ToList()
+					};
+				}).ToList();
 			}
+
+			private List<AwardsIntervalItemDTO> CalculateProducerIntervals(string producer, List<int> years)
+			{
+				if (years.Count < 2)
+				{
+					return new List<AwardsIntervalItemDTO>
+					{
+						new AwardsIntervalItemDTO
+						{
+							Producer = producer,
+							PreviousWin = years.First(),
+							FollowingWin = years.First()
+						}
+					};
+				}
+
+				return years.Zip(years.Skip(1), (previous, following) => new AwardsIntervalItemDTO
+				{
+					Producer = producer,
+					PreviousWin = previous,
+					FollowingWin = following
+				}).ToList();
+			}
+
 		}
 	}
 }

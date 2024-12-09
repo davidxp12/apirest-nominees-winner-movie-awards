@@ -4,6 +4,8 @@ using LiteDB;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Persistence.Repository
 {
@@ -30,6 +32,20 @@ namespace Persistence.Repository
 		public IEnumerable<T> GetAll()
 		{
 			return _liteCollection.FindAll();
+		}
+
+		public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
+		{
+			return await Task.Run(() =>
+			{
+				cancellationToken.ThrowIfCancellationRequested();
+
+				var result = _liteCollection.FindAll();
+
+				cancellationToken.ThrowIfCancellationRequested();
+
+				return result;
+			}, cancellationToken);
 		}
 
 		public IEnumerable<T> GetByTitle(string title)

@@ -10,3 +10,8 @@
 
 
 <ul><li>     </li></ul>
+
+<p>Instruções para executrar os testes integrados:</p>
+
+
+<ul><li>     </li></ul>

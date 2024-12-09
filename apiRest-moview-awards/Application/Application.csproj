@@ -5,15 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Features\ProductFeatures\Queries\**" />
-    <EmbeddedResource Remove="Features\ProductFeatures\Queries\**" />
-    <None Remove="Features\ProductFeatures\Queries\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Features\ProductFeatures\Commands\CreateProductCommand.cs" />
-    <Compile Remove="Features\ProductFeatures\Commands\DeleteProductByIdCommand.cs" />
-    <Compile Remove="Features\ProductFeatures\Commands\UpdateProductCommand.cs" />
     <Compile Remove="Interfaces\IApplicationDbContext.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -23,9 +14,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Features\MovieFeatures\Queries\" />
-    <Folder Include="Features\ProductFeatures\Commands\" />
   </ItemGroup>
 </Project>

@@ -3,17 +3,18 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using ApiRestMovieAwards.BFF;
+using ApiRestMoviewAwards.Test.WebApplicationFactory;
 using Domain.DTO;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 namespace ApiRestMoviewAwards.Test
 {
-	public class AwardsIntervalControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+	public class AwardsIntervalControllerIntegrationTests : IClassFixture<CustomWebApplicationFactory>
 	{
 		private readonly HttpClient _client;
 
-		public AwardsIntervalControllerIntegrationTests(WebApplicationFactory<Program> factory)
+		public AwardsIntervalControllerIntegrationTests(CustomWebApplicationFactory factory)
 		{
 			_client = factory.CreateClient();
 		}

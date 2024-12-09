@@ -8,7 +8,7 @@
 
 <p>Instruções para executrar o projeto:</p>
 <ul><li>É necessário ter o arquivo csv com o nome "movielist" para ter dados iniciais na aplicação ou inserilos via API , path do arquivo : \apirest-nominees-winner-movie-awards\apiRest-moview-awards\WebApi\File\csv </li></ul>
-<ul><li>Ao abrir o projeto via visual studio 2019 ou 2022 escolher o projeto ApiRestMoviewAwards.BFF como set as startup projeto e precionar F5 para abrir o swagger da api </li></ul>
+<ul><li>Ao abrir o projeto via visual studio 2019 ou 2022 escolher o projeto ApiRestMoviewAwards.BFF como 'set as startup project' e precionar F5 para abrir o swagger da api </li></ul>
 <ul><li>A mesma irá ser executada no endereço http://localhost:49332 </li></ul>
 
 <p>Instruções para executrar os testes integrados:</p>

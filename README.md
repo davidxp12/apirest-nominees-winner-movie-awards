@@ -4,7 +4,7 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:list -->
-<ul><li>Onion Architecture</li><li>LiteDB - NOSql Cache local</li><li>.NET 8.0</li><li>Swagger</li><li> Mediator Pattern using MediatR Library</li><li>CRUD operations</li><li>(Dependências Invertidas)Inverted Dependencies</li><li>API Versionamento</li><li>CsvHelper</li><li>NUnit Test</li></ul>
+<ul><li>Onion Architecture</li><li>CQRS (Command Query Responsibility Segregation</li><li> LiteDB - NOSql Cache local</li><li>.NET 8.0</li><li>Swagger</li><li> Mediator Pattern using MediatR Library</li><li>CRUD operations</li><li>(Dependências Invertidas)Inverted Dependencies</li><li>API Versionamento</li><li>CsvHelper</li><li>NUnit Test</li></ul>
 
 <p>Instruções para executrar o projeto:</p>
 <ul><li>É necessário ter o arquivo csv com o nome "movielist" para ter dados iniciais na aplicação ou inserilos via API , path do arquivo : \apirest-nominees-winner-movie-awards\apiRest-moview-awards\WebApi\File\csv </li></ul>
